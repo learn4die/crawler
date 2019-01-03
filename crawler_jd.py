@@ -42,12 +42,11 @@ def getpic(url):
             else:
                 break;
         html = browser.page_source; 
-       # 识别编码
        # encode_type = chardet.detect(html);
        # 解码
        # html = html.decode(encode_type['encoding'],'ignore');
        # print("encode:",encode_type);
-        remod_pic = '(<img data-lazyload.*jpg.*/>)|(background-image:url.*jpg\))';
+        remod_pic = '(<img data-lazyload.*?jpg)|(background-image:url.*?jpg\))';
        # 获取商品页图片网址列表
         pic_list = re.findall(remod_pic,html);
         pic_list = list(set(pic_list));# 去掉重复数据
@@ -78,7 +77,10 @@ def getpic(url):
 #根据输入的网址获取商品名称及商品列表 关键字为 白酒
 def geturl_list(url):
    # 按照utf-8编码格式获取网页源码
-    browser = webdriver.Chrome(chrome_options=chrome_options);
+    try:
+        browser = webdriver.Chrome(chrome_options=chrome_options);
+    except:
+        print("打开浏览器实例失败_geturl_list：",url);
     retryCount = 10;
     while(retryCount > 0):
         try:
