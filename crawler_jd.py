@@ -31,7 +31,6 @@ def getpic(url):
         itmeurl= 'https:' + itmeurl;
         print('part5',itmeurl);
        # 读取商品页面html码
-        browser = webdriver.Chrome(chrome_options=chrome_options);
         retryCount = 10;
         while(retryCount > 0):
             try:
@@ -60,7 +59,10 @@ def getpic(url):
        # 获取该商品页面所有图片并保存到对应路径
         for pic_url in pic_list:
             print("图片获取中：",pic_url);
-            res_url = 'http:'+ re.findall('//.*?jpg',str(pic_url))[0];
+            try:
+                res_url = 'http:'+ re.findall('//img\w+\.360buyimg\.com/*[\w-]+/*\w+/\w+/\w+/\w+/\w+/\w+/\w+\/*\w*.jpg',str(pic_url))[0];
+            except:
+                print("资源地址获取失败",res_url);
             retryCount = 10;
             while(retryCount > 0 ):
                 try:
@@ -77,10 +79,6 @@ def getpic(url):
 #根据输入的网址获取商品名称及商品列表 关键字为 白酒
 def geturl_list(url):
    # 按照utf-8编码格式获取网页源码
-    try:
-        browser = webdriver.Chrome(chrome_options=chrome_options);
-    except:
-        print("打开浏览器实例失败_geturl_list：",url);
     retryCount = 10;
     while(retryCount > 0):
         try:
@@ -90,13 +88,14 @@ def geturl_list(url):
             print("获取网页源码失败",url);
         else:
             html = browser.page_source;
-		    #匹配模式
+            #匹配模式
             remod = '<a target="_blank" title="" href=".*\n.*\n.*?酒.*</em>';
             #获取包含商品名称和商品url的列表关键词为 白酒
             url_list = re.findall(remod,html);
             return url_list;
     return None;
 url_list = [];
+browser = webdriver.Chrome(chrome_options=chrome_options);
 for i in range(1,763):
     url_main = 'http://list.jd.com/list.html?cat=12259,12260,9435&page='+str(i);
     print("part1",url_main);
